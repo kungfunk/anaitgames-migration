@@ -1,13 +1,7 @@
 #!/usr/bin/php
 
 <?php
-error_reporting(E_ERROR | E_WARNING | E_PARSE);
-
-const HOST = 'localhost';
-const DB_OLD = 'anaitgames_old_wrong';
-const DB_NEW = 'anaitgames';
-const USER = 'root';
-const PASS = 'root';
+include config.php
 
 const JPG_MIME = 'image/jpeg';
 const PNG_MIME = 'image/png';
