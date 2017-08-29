@@ -114,5 +114,15 @@ CREATE TABLE `users` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+DROP TABLE IF EXISTS `_temp_user_id`;
+CREATE TABLE `_temp_user_id` (
+  `old_id` int(11) NOT NULL,
+  `new_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+DROP TABLE IF EXISTS `_temp_post_id`;
+CREATE TABLE `_temp_post_id` (
+  `old_id` int(11) NOT NULL,
+  `new_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 -- 2017-08-17 07:49:35
