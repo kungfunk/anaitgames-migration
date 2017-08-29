@@ -25,6 +25,7 @@ const SQL_INSERT_FIXED_USER = <<<EOD
 INSERT INTO users(username, full_name, password, email, register_date, role, banned, patreon_level, avatar, rank, twitter_user, register_token, reset_password_token)
 VALUES(:username, :full_name, :password, :email, :register_date, :role, :banned, :patreon_level, :avatar, :rank, :twitter_user, :register_token, null)
 EOD;
+const SQL_INSERT_TEMP_USER_ID = "INSERT INTO _temp_user_id (old_id, new_id) VALUES (:old_id, :new_id)";
 
 function usuarioGetAvatar($usuario_url, $old_avatar) {
 	switch($old_avatar) {
@@ -83,14 +84,6 @@ function usuarioGetPatreonLevel($is_patreon, $logros_usuario) {
 	}
 }
 
-$db_old = new PDO('mysql:host='.HOST.';dbname='.DB_OLD.';charset=UTF8', USER, PASS);
-$db_old->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
-$db_old->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
- 
-$db_new = new PDO('mysql:host='.HOST.';dbname='.DB_NEW.';charset=UTF8', USER, PASS);
-$db_new->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ); 
-$db_new->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
 print "-----STARTING USERS MIGRATION -----" . PHP_EOL;
 
 foreach($db_old->query(SQL_GET_ALL_USERS) as $usuario) {
@@ -120,7 +113,15 @@ foreach($db_old->query(SQL_GET_ALL_USERS) as $usuario) {
 		':rank' => $usuario->rango,
 		':twitter_user' => $usuario->url_twitter,
 		':register_token' => $usuario->codconfirm_email
-	]);
+    ]);
+
+    $user_new_id = $db_new->lastInsertId();
+
+    $insert_temp_user_id = $db_new->prepare(SQL_INSERT_TEMP_USER_ID);
+    $insert_temp_user_id->execute([
+        ':old_id' => $usuario->id,
+        ':new_id' => $user_new_id
+    ]);
 }
 
 print "-----USERS MIGRATION ENDED-----" . PHP_EOL;
