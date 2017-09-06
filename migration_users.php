@@ -103,7 +103,7 @@ foreach($db_old->query(SQL_GET_ALL_USERS) as $usuario) {
 	$insert_fixed_user->execute([
 		':username' => $usuario->usuario_url,
 		':full_name' => $usuario->usuario,
-		':password' => $usuario->password,
+		':password' => password_hash($usuario->password, PASSWORD_DEFAULT), //Added bcryt to already hashed passwords
 		':email' => $usuario->email,
 		':register_date' => $usuario->fecha_alta,
 		':role' => usuarioGetRole($usuario->email_confirmado, $usuario->id_rol),
