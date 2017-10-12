@@ -1,7 +1,5 @@
-#!/usr/bin/php
-
 <?php
-include config.php
+include 'config.php';
 
 const JPG_MIME = 'image/jpeg';
 const PNG_MIME = 'image/png';
@@ -19,7 +17,13 @@ const NEW_PATREON_BRONCE = 1;
 const NEW_PATREON_PLATA = 2;
 const NEW_PATREON_ORO = 3;
 
-const SQL_GET_ALL_USERS = 'SELECT * FROM usuario LIMIT 50';
+const NEW_ROLE_UNCONFIRMED = 0;
+const NEW_ROLE_USER = 1;
+const NEW_ROLE_MOD = 2;
+const NEW_ROLE_EDITOR = 3;
+const NEW_ROLE_ADMIN = 4;
+
+const SQL_GET_ALL_USERS = 'SELECT * FROM usuario';
 const SQL_GET_LOGROS_FORM_USER = 'SELECT * FROM usuario_logros WHERE usuario_id = :usuario_id AND logro_id in (:patreon_bronce, :patreon_plata, :patreon_oro) ORDER BY logro_id DESC';
 const SQL_INSERT_FIXED_USER = <<<EOD
 INSERT INTO users(username, full_name, password, email, register_date, role, banned, patreon_level, avatar, rank, twitter_user, register_token, reset_password_token)
@@ -46,23 +50,24 @@ function usuarioGetAvatar($usuario_url, $old_avatar) {
 
 function usuarioGetRole($email_confirmado, $old_role) {
 	if($email_confirmado == 0)
-		return 0;
+		return NEW_ROLE_UNCONFIRMED;
 	
 	switch($old_role) {
+        case 1:
 		case 2: 
 		case 3:
 		case 4:
 		case 5:
-			return 1;			
+			return NEW_ROLE_USER;
 		break;
 		case 8:
-			return 2;
+			return NEW_ROLE_MOD;
 		break;
 		case 6:
-			return 3;
+			return NEW_ROLE_EDITOR;
 		break;
 		case 7:
-			return 4;
+			return NEW_ROLE_ADMIN;
 		break;
 	}
 }
@@ -82,6 +87,8 @@ function usuarioGetPatreonLevel($is_patreon, $logros_usuario) {
 			return NEW_PATREON_ORO;
 		break;
 	}
+
+	return NEW_NO_PATREON;
 }
 
 print "-----STARTING USERS MIGRATION -----" . PHP_EOL;
@@ -92,9 +99,9 @@ foreach($db_old->query(SQL_GET_ALL_USERS) as $usuario) {
 	$select_logros = $db_old->prepare(SQL_GET_LOGROS_FORM_USER);
 	$select_logros->execute([
 		':usuario_id' => $usuario->id,
-		':patreon_bronce' => PATREON_BRONCE,
-		':patreon_plata' => PATREON_PLATA,
-		':patreon_oro' => PATREON_ORO,
+		':patreon_bronce' => OLD_PATREON_BRONCE,
+		':patreon_plata' => OLD_PATREON_PLATA,
+		':patreon_oro' => OLD_PATREON_ORO,
 	]);
 	
 	$logros_usuario = $select_logros->fetchAll();
