@@ -15,7 +15,7 @@ CREATE TABLE `comments` (
   `body` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
   `formated_body` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
   `creation_date` datetime NOT NULL,
-  `modification_date` datetime NOT NULL,
+  `modification_date` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `post_id` (`post_id`),
   KEY `user_id` (`user_id`),
@@ -45,22 +45,23 @@ CREATE TABLE `posts` (
   `post_type_id` int(11) NOT NULL,
   `status` tinyint(4) NOT NULL DEFAULT '0',
   `creation_date` datetime NOT NULL ON UPDATE CURRENT_TIMESTAMP,
-  `modification_date` datetime NOT NULL,
+  `modification_date` datetime DEFAULT NULL,
   `publish_date` datetime DEFAULT NULL,
   `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `subtitle` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `slug` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `body` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `formated_body` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `body` longtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `formated_body` longtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `excerpt` mediumtext COLLATE utf8mb4_unicode_ci,
+  `original_author` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `score` tinyint(4) DEFAULT NULL,
   `num_views` int(11) NOT NULL DEFAULT '0',
-  `metadata` json NOT NULL,
+  `metadata` json DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `post_type_id` (`post_type_id`),
   KEY `user_id` (`user_id`),
-  CONSTRAINT `posts_ibfk_3` FOREIGN KEY (`post_type_id`) REFERENCES `post_types` (`id`) ON UPDATE CASCADE,
-  CONSTRAINT `posts_ibfk_4` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON UPDATE CASCADE
+  CONSTRAINT `posts_ibfk_3` FOREIGN KEY (`post_type_id`) REFERENCES `post_types` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `posts_ibfk_4` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
@@ -85,6 +86,12 @@ CREATE TABLE `post_types` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+INSERT INTO `post_types` (`id`, `name`, `slug`) VALUES
+(1,	'Noticias',	'noticias'),
+(2,	'Articulos',	'articulos'),
+(3,	'Analisis',	'analisis'),
+(4,	'Streaming',	'streaming'),
+(5,	'Podcast',	'podcast');
 
 DROP TABLE IF EXISTS `tags`;
 CREATE TABLE `tags` (
