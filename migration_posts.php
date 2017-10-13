@@ -44,7 +44,7 @@ const OLD_TYPE_CONCURSO = 'concurso';
 const OLD_TYPE_SORTEO = 'sorteo';
 const OLD_TYPE_COBERTURA = 'cobertura en directo';
 const OLD_TYPE_PODCAST = 'podcast';
-const DEFAULT_AUTHOR_ID = 1;
+const DEFAULT_AUTHOR_ID = 4;
 
 function getPostTypeId($old_post_type) {
     switch($old_post_type) {
@@ -108,6 +108,10 @@ foreach($db_old->query(SQL_SELECT_POSTS) as $post) {
             ':old_id' => $post->creador
         ]);
         $new_user_id = $select_user_new_id->fetch(PDO::FETCH_OBJ)->new_id;
+
+        if(!$new_user_id) {
+            $new_user_id = DEFAULT_AUTHOR_ID;
+        }
     }
 
     $insert_fixed_post = $db_new->prepare(SQL_INSERT_FIXED_POST);
