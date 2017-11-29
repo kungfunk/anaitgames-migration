@@ -14,9 +14,9 @@ INSERT INTO comments (post_id, user_id, body, formated_body, creation_date, modi
 VALUES (:post_id, :user_id, :body, :formated_body, :creation_date, :modification_date)
 EOD;
 
-const NEW_STATUS_DRAFT = 0;
-const NEW_STATUS_PUBLISHED = 1;
-const NEW_STATUS_DELETED = 2;
+const NEW_STATUS_DRAFT = 'draft';
+const NEW_STATUS_PUBLISHED = 'published';
+const NEW_STATUS_DELETED = 'trash';
 const OLD_STATUS_BORRADOR = 'borrador';
 const OLD_STATUS_REVISAR = 'revisar';
 const OLD_STATUS_PUBLICADO = 'publicado';
