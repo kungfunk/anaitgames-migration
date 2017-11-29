@@ -43,7 +43,7 @@ CREATE TABLE `posts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
   `post_type_id` int(11) NOT NULL,
-  `status` tinyint(4) NOT NULL DEFAULT '0',
+  `status` enum('published', 'draft', 'trash') COLLATE utf8mb4_unicode_ci NOT NULL,
   `creation_date` datetime NOT NULL ON UPDATE CURRENT_TIMESTAMP,
   `modification_date` datetime DEFAULT NULL,
   `publish_date` datetime DEFAULT NULL,
