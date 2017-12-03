@@ -42,7 +42,7 @@ DROP TABLE IF EXISTS `posts`;
 CREATE TABLE `posts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
-  `post_type_id` int(11) NOT NULL,
+  `category_id` int(11) NOT NULL,
   `status` enum('published', 'draft', 'trash') COLLATE utf8mb4_unicode_ci NOT NULL,
   `creation_date` datetime NOT NULL ON UPDATE CURRENT_TIMESTAMP,
   `modification_date` datetime DEFAULT NULL,
@@ -58,9 +58,9 @@ CREATE TABLE `posts` (
   `num_views` int(11) NOT NULL DEFAULT '0',
   `metadata` json DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `post_type_id` (`post_type_id`),
+  KEY `category_id` (`category_id`),
   KEY `user_id` (`user_id`),
-  CONSTRAINT `posts_ibfk_3` FOREIGN KEY (`post_type_id`) REFERENCES `post_types` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `posts_ibfk_3` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `posts_ibfk_4` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -78,15 +78,15 @@ CREATE TABLE `posts_tags` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
-DROP TABLE IF EXISTS `post_types`;
-CREATE TABLE `post_types` (
+DROP TABLE IF EXISTS `categories`;
+CREATE TABLE `categories` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `slug` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO `post_types` (`id`, `name`, `slug`) VALUES
+INSERT INTO `categories` (`id`, `name`, `slug`) VALUES
 (1,	'Noticias',	'noticias'),
 (2,	'Articulos',	'articulos'),
 (3,	'Analisis',	'analisis'),

@@ -4,8 +4,8 @@ include 'config.php';
 const SQL_SELECT_POSTS = "SELECT * FROM articulo WHERE estado NOT IN ('papelera', 'borrador')";
 const SQL_SELECT_USER_NEW_ID = "SELECT new_id FROM _temp_user_id WHERE old_id = :old_id";
 const SQL_INSERT_FIXED_POST = <<<EOD
-INSERT INTO posts (user_id, post_type_id, status, creation_date, modification_date, publish_date, title, subtitle, slug, body, formated_body, excerpt, original_author, score, num_views, metadata)
-VALUES (:user_id, :post_type_id, :status, :creation_date, :modification_date, :publish_date, :title, :subtitle, :slug, :body, :formated_body, :excerpt, :original_author, :score, :num_views, :metadata)
+INSERT INTO posts (user_id, category_id, status, creation_date, modification_date, publish_date, title, subtitle, slug, body, formated_body, excerpt, original_author, score, num_views, metadata)
+VALUES (:user_id, :category_id, :status, :creation_date, :modification_date, :publish_date, :title, :subtitle, :slug, :body, :formated_body, :excerpt, :original_author, :score, :num_views, :metadata)
 EOD;
 const SQL_SELECT_COMMENTS = "SELECT * FROM foro_mensajes WHERE id_hilo = :id_hilo";
 const SQL_INSERT_TEMP_POST_ID = "INSERT INTO _temp_post_id (old_id, new_id) VALUES (:old_id, :new_id)";
@@ -117,7 +117,7 @@ foreach($db_old->query(SQL_SELECT_POSTS) as $post) {
     $insert_fixed_post = $db_new->prepare(SQL_INSERT_FIXED_POST);
     $insert_fixed_post->execute([
         ':user_id' => $new_user_id,
-        ':post_type_id' => getPostTypeId($post->tipo),
+        ':category_id' => getPostTypeId($post->tipo),
         ':status' => getStatus($post->estado),
         ':creation_date' => $post->fecha_publicacion,
         ':modification_date' => null,
